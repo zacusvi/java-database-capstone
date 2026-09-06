@@ -63,11 +63,6 @@ private String username;
 @Column(name = "password")
 private String password;
 
-@NotNull (message = "CreatedAt must not be null")
-@Column(name = "created_at")
-private Timestamp createdAt;
-
-
 
 
 public Admin() {
@@ -75,10 +70,9 @@ public Admin() {
 }
 
 
-public Admin(Long id, String username, String password, Timestamp createdAt) {
+public Admin(Long id, String username, String password) {
     this.id = id;
     this.password = password;
-    this.createdAt = createdAt;
     this.username = username;
 }
 
@@ -98,13 +92,6 @@ public void setPassword(String password) {
     this.password = password;
 }
 
-public Timestamp getCreatedAt() {
-    return createdAt;
-}
-
-public void setCreatedAt(Timestamp createdAt) {
-    this.createdAt = createdAt;
-}
 
 public String getUsername() {
     return username;

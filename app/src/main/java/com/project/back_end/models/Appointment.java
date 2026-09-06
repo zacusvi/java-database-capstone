@@ -112,7 +112,7 @@ public class Appointment {
   private Patient patient;
 
   @Future
-  @Column(name = "appointmenttime")
+  @Column(name = "appointment_time")
   private LocalDateTime appointmentTime;
 
   @NotNull(message = "Status must not be null")

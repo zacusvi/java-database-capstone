@@ -2,12 +2,11 @@ package com.project.back_end.models;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import jakarta.persistence.Entity;
+
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-@Entity 
 @Document(collection = "prescriptions")
 public class Prescription {
 
