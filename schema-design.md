@@ -4,6 +4,7 @@
 - id: INT, Primary key, Auto Increment
 - name: VARCHAR(255), not null
 - email: VARCHAR(255), not null, not repeat
+- username: VARCHAR(255), not null, not repeat
 - password: VARCHAR(255), not null
 - creation_date: TIMESTAMP
 
@@ -11,6 +12,7 @@
 - id: INT, Primary key, Auto Increment
 - name: VARCHAR(255), not null
 - email: VARCHAR(255), not null, not repeat
+- username: VARCHAR(255), not null, not repeat
 - password: VARCHAR(255), not null
 - phone: VARCHAR(255), 
 - speciality: VARCHAR(255)
@@ -20,6 +22,7 @@
 - id: INT,Primary key, Auto Increment
 - name: VARCHAR(255), not null
 - email: VARCHAR(255), not null
+- username: VARCHAR(255), not null, not repeat
 - password: VARCHAR(255), not null
 - creation_date: TIMESTAMP
 

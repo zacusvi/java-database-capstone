@@ -1,5 +1,19 @@
 package com.project.back_end.models;
+    
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Pattern;
+
+@Entity
+@Table(name = "patient")
 public class Patient {
 // @Entity annotation:
 //    - Marks the class as a JPA entity, meaning it represents a table in the database.
@@ -54,6 +68,93 @@ public class Patient {
 //    - Standard getter and setter methods are provided for all fields: id, name, email, password, phone, and address.
 //    - These methods allow access and modification of the fields of the Patient class.
 
-  
+
+    
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
+
+    @Column(name = "name")
+    @NotNull(message = "Name must not be null")
+    private String name;
+
+    @Column(name = "email")
+    @NotNull(message = "Email must not be null")
+    private String email;
+
+    @Column(name = "password")
+    @JsonProperty (access = JsonProperty.Access.WRITE_ONLY)
+    @NotNull(message = "Password must not be null")
+    private String password;
+
+    @Column(name = "phone")
+    @NotNull(message = "Phone must not be null")
+    @Pattern(regexp = "^[0-9]{10}$")
+    private String phone;
+
+    @Column(name = "address")
+    @NotNull(message = "Address must not be null")
+    private String address;
+
+    public Patient() {
+    }
+
+    public Patient(Long id, String name, String email, String password, String phone, String address) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.address = address;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
 }
