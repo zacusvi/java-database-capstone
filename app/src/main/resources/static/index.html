@@ -102,3 +102,42 @@ and triggers modal-based login functionality.
     * Properly close all opened tags to complete the document structure.
 
  -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Select Role</title>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="./assets/images/logo/Logo.png">
+    <link rel="stylesheet" href="./assets/css/index.css">
+   <link rel="stylesheet" href="./assets/css/style.css">
+   <script src="./js/util.js" defer></script>
+   <script src="./js/render.js" defer></script>
+   <script src="./js/components/header.js" defer></script>
+   <script src="./js/components/footer.js" defer></script>
+
+</head>
+<body>
+   <div class="container">
+    <div class="wrapper">
+        
+        <div id="header"></div>
+        <main class="main-content">
+            <h2>Select Your Role</h2>
+            <div class="role-buttons">
+                <button id="admin">Admin</button>
+                <button id="patient">Patient</button>
+                <button id="doctor" >Doctor</button>
+            </div>
+        </main>
+        <div id="footer"></div>
+        <div id="modal" class="modal">
+            <button class="closeModal"></button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+   </div>
+   <script type="module" src="../js/services/index.js" defer></script>
+</body>
+</html>

@@ -65,7 +65,7 @@ public class Prescription {
 private String id;
 
 @NotNull(message = "Patient name must not be null")
-@Size (min = 3, max = 100)
+@Size (min = 3, max = 100, message = "Patient name must be between 3 and 100 characters")
 private String patientName;
 
 @NotNull(message = "Appointment ID must not be null")
@@ -73,14 +73,14 @@ private Long appointmentId;
 
   
 @NotNull(message = "Medication must not be null")
-@Size(min = 3, max = 100)
+@Size(min = 3, max = 100, message = "Medication must be between 3 and 100 characters")
 private String medication;
 
 
 @NotNull(message = "Dosage must not be null")
 private String dosage;
 
-@Size (max = 200)
+@Size (max = 200, message = "Doctor notes must not exceed 200 characters")
 private String doctorNotes;
 
 
