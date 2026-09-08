@@ -70,3 +70,92 @@
 
     If saving fails, show an error message
 */
+
+import { openModal } from './components/modals.js';
+import { getDoctors, filterDoctors, saveDoctor } from './services/doctorServices.js';
+import { createDoctorCard } from './components/doctorCard.js';
+
+document.getElementById('addDocBtn').addEventListener('click', () => {
+  openModal('addDoctor');
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadDoctorCards();
+});
+
+async function loadDoctorCards() {
+  try {
+    const doctors = await getDoctors();
+    const contentDiv = document.getElementById('doctorContent');
+    contentDiv.innerHTML = '';
+    doctors.forEach(doctor => {
+      const card = createDoctorCard(doctor);
+      contentDiv.appendChild(card);
+    });
+  } catch (error) {
+    console.error('Error loading doctor cards:', error);
+  }
+}
+
+document.getElementById('searchBar').addEventListener('input', filterDoctorsOnChange);
+document.getElementById('timeFilter').addEventListener('change', filterDoctorsOnChange);
+document.getElementById('specialtyFilter').addEventListener('change', filterDoctorsOnChange);
+
+async function filterDoctorsOnChange() {
+  const name = document.getElementById('searchBar').value.trim() || null;
+  const time = document.getElementById('timeFilter').value || null;
+  const specialty = document.getElementById('specialtyFilter').value || null;
+  try {
+    const doctors = await filterDoctors(name, time, specialty);
+    const contentDiv = document.getElementById('doctorContent');
+    contentDiv.innerHTML = '';
+    if (doctors.length > 0) {
+      doctors.forEach(doctor => {
+        const card = createDoctorCard(doctor);
+        contentDiv.appendChild(card);
+      });
+    } else {
+      contentDiv.innerHTML = '<p>No doctors found with the given filters.</p>';
+    }
+  } catch (error) {
+    alert('Error filtering doctors: ' + error.message);
+  }
+}
+
+async function renderDoctorCards(doctors) {
+  const contentDiv = document.getElementById('doctorContent');
+  contentDiv.innerHTML = '';
+  doctors.forEach(doctor => {
+    const card = createDoctorCard(doctor);
+    contentDiv.appendChild(card);
+  });
+}
+
+
+async function adminAddDoctor() {
+  const name = document.getElementById('doctorName').value.trim();
+  const email = document.getElementById('doctorEmail').value.trim();
+  const phone = document.getElementById('doctorPhone').value.trim();
+  const password = document.getElementById('doctorPassword').value.trim();
+  const specialty = document.getElementById('doctorSpecialty').value.trim();
+  const availabilityElements = document.querySelectorAll('input[name="availability"]:checked');
+  const availability = Array.from(availabilityElements).map(el => el.value);
+
+  const token = localStorage.getItem('authToken');
+  if (!token) {
+    alert('No authentication token found. Please log in.');
+    return;
+  }
+
+  const doctor = { name, email, phone, password, specialty, availability };
+
+  try {
+    await saveDoctor(doctor, token);
+    alert('Doctor added successfully.');
+    
+    document.getElementById('addDoctorModal').style.display = 'none';
+    location.reload();
+  } catch (error) {
+    alert('Error adding doctor: ' + error.message);
+  }
+}

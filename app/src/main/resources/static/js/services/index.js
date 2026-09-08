@@ -56,3 +56,63 @@
     - Log the error to the console
     - Show a generic error message
 */
+
+import { openModal } from '../components/modals.js';
+import { API_BASE_URL } from '../config/config.js';
+
+const ADMIN_API = API_BASE_URL + '/admin';
+const DOCTOR_API = API_BASE_URL + '/doctor';
+
+       window.onload = function () {
+          const adminBtn = document.getElementById('adminLogin');
+       if (adminBtn) {
+        adminBtn.addEventListener('click', () => {
+          openModal('adminLogin');
+        });
+          }
+       
+        }     
+
+
+async function adminLoginHandler() {
+  const admin = { username, password };
+  const response = await fetch(ADMIN_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(admin)
+  });
+  if (response.ok) {
+    const data = await response.json();
+    localStorage.setItem('token', data.token);
+    selectRole('admin');
+  } else {
+    alert('Invalid admin credentials. Please try again.');
+  }
+
+        }
+
+async function doctorLoginHandler() {
+  const doctor = { email, password };
+  const response = await fetch(DOCTOR_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(doctor)
+  });
+  if (response.ok) {
+    const data = await response.json();
+    localStorage.setItem('token', data.token);
+    selectRole('doctor');
+  } else {
+    
+    switch (response.status) {
+      case 401:
+        alert('Invalid doctor credentials. Please try again.');
+        break;
+      case 404:
+        alert('Doctor not found. Please check your email and try again.');
+        break;
+      default:
+        alert('An error occurred during login. Please try again later.');
+    }
+  }
+}

@@ -52,3 +52,75 @@
     - Call renderContent() (assumes it sets up the UI layout)
     - Call loadAppointments() to display today's appointments by default
 */
+
+import { getAllAppointments } from './services/appointmentRecordService.js';
+import { createPatientRow } from './components/patientRows.js';
+
+const tableBody = document.getElementById('patientTableBody');
+
+let selectedDate = new Date().toISOString().split('T')[0]; 
+const token = localStorage.getItem('token');
+let patientName = null; 
+
+const searchBar = document.getElementById('searchBar');
+searchBar.addEventListener('input', () => {
+  const inputValue = searchBar.value.trim();
+  if (inputValue !== '') {
+    patientName = inputValue;
+  } else {
+    patientName = null;
+  }
+  loadAppointments();
+});
+
+const todayButton = document.getElementById('todayButton');
+todayButton.addEventListener('click', () => {
+  selectedDate = new Date().toISOString().split('T')[0];
+  document.getElementById('datePicker').value = selectedDate;
+  loadAppointments();
+});
+
+const datePicker = document.getElementById('datePicker');
+datePicker.addEventListener('change', () => {
+  selectedDate = datePicker.value;
+  loadAppointments();
+});
+
+
+async function loadAppointments() {
+  try {
+    const appointments = await getAllAppointments(selectedDate, patientName || "null", token);
+    tableBody.innerHTML = '';
+    if (appointments.length === 0) {
+      const noAppointmentsRow = document.createElement('tr');
+      const noAppointmentsCell = document.createElement('td');
+      noAppointmentsCell.colSpan = 4;
+      noAppointmentsCell.textContent = 'No Appointments found for today.';
+      noAppointmentsRow.appendChild(noAppointmentsCell);
+      tableBody.appendChild(noAppointmentsRow);
+    } else {
+      appointments.forEach(appointment => {
+        const patient = {
+          id: appointment.id,
+          name: appointment.name,
+          phone: appointment.phone,
+          email: appointment.email
+        };
+        const row = createPatientRow(patient);
+        tableBody.appendChild(row);
+      });
+    }
+  } catch (error) {
+    const errorRow = document.createElement('tr');
+    const errorCell = document.createElement('td');
+    errorCell.colSpan = 4;
+    errorCell.textContent = 'Error loading appointments. Try again later.';
+    errorRow.appendChild(errorCell);
+    tableBody.appendChild(errorRow);
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  renderContent();
+  loadAppointments();
+});
