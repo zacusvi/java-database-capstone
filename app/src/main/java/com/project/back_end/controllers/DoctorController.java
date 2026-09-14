@@ -22,6 +22,8 @@ import com.project.back_end.models.Doctor;
 import com.project.back_end.services.AppService;
 import com.project.back_end.services.DoctorService;
 import com.project.back_end.services.TokenService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController 
 @RequestMapping("/doctor")
@@ -193,5 +195,19 @@ private final DoctorService doctorService;
             default -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Internal server error"));
         };
+    }
+
+    @GetMapping("/filter/{name}/{time}/{speciality}")
+    public ResponseEntity<Map<String, Object>> filterDoctors(
+            @PathVariable String name,
+            @PathVariable String time,
+            @PathVariable String speciality) {
+
+        List<Doctor> doctors = doctorService.filterDoctorsByNameSpecilityandTime(name, time, speciality);
+        Map<String, Object> response = new HashMap<>();
+        response.put("doctors", doctors);
+        response.put("count", doctors.size());
+
+        return ResponseEntity.ok(response);
     }
 }

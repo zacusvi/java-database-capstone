@@ -140,8 +140,8 @@ private final PatientService patientService;
     }
 
     
-    public Map<String, Object> filterDoctor(String name, String specialty, String time) {
-        return doctorService.filterDoctorsByNameSpecilityandTime(name, specialty, time);
+    public Map<String, Object> filterDoctor(String name, String time, String specialty) {
+        return doctorService.filterDoctorsByNameSpecilityandTime(name, time, specialty);
     }
 
    

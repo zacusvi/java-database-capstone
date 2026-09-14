@@ -198,8 +198,7 @@ public class DoctorService {
     }
 
     @Transactional (readOnly = true)
-    public Map<String, Object> filterDoctorsByNameSpecilityandTime(String name, String specialty, String time) {
-        
+    public Map<String, Object> filterDoctorsByNameSpecilityandTime(String name, String time, String specialty) {
         List<Doctor> filteredDoctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty).stream()
                 .filter(doctor -> doctor.getAvailableTimes().contains(time))
                 .toList();
