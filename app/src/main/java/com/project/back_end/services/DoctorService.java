@@ -261,10 +261,16 @@ public class DoctorService {
     }
 
     @Transactional (readOnly = true)
-    public Doctor filterDoctorByTime(List<Doctor> doctors, String amOrPm) {
-        return doctors.stream()
-                .filter(doctor -> doctor.getAvailableTimes().contains(amOrPm))
-                .findFirst()
-                .orElse(null);
+    private List<Doctor> filterDoctorByTime(List<Doctor> doctors, String amOrPm) {
+        if (amOrPm == null) return doctors;
+
+        return doctors.stream().filter(doctor -> {
+            for (String slot : doctor.getAvailableTimes()) {
+                int hour = Integer.parseInt(slot.split(":")[0]);
+                if (amOrPm.equalsIgnoreCase("AM") && hour < 12) return true;
+                if (amOrPm.equalsIgnoreCase("PM") && hour >= 12) return true;
+            }
+            return false;
+        }).collect(Collectors.toList());
     }
 }
