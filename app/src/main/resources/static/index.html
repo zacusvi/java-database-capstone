@@ -123,14 +123,23 @@ and triggers modal-based login functionality.
     <div class="wrapper">
         
         <div id="header"></div>
-        <main class="main-content">
-            <h2>Select Your Role</h2>
-            <div class="role-buttons">
-                <button id="admin">Admin</button>
-                <button id="patient">Patient</button>
-                <button id="doctor" >Doctor</button>
-            </div>
-        </main>
+         <main class="main-content">
+                    <h2 id="role-heading">Select Your Role</h2>
+
+                    <div class="role-buttons">
+                        <button id="adminBtn" onclick="selectRole('admin')">
+                            Admin
+                        </button>
+
+                        <button id="doctorBtn" onclick="selectRole('doctor')">
+                            Doctor
+                        </button>
+
+                        <button id="patientBtn" onclick="selectRole('patient')">
+                            Patient
+                        </button>
+                    </div>
+                </main>
         <div id="footer"></div>
         <div id="modal" class="modal">
             <button class="closeModal"></button>
