@@ -106,7 +106,7 @@ export async function filterDoctors(name, time, specialty) {
     const response = await fetch(`${DOCTOR_API}/filter/${name}/${time}/${specialty}`);
     if (response.ok) {
       const data = await response.json();
-      return data.doctors;
+      return { doctors: data.doctors || [] };
     } else {
       console.error('Error filtering doctors:', response.statusText);
       return { doctors: [] };

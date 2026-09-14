@@ -106,7 +106,8 @@ async function filterDoctorsOnChange() {
   const time = document.getElementById('timeFilter').value || null;
   const specialty = document.getElementById('specialtyFilter').value || null;
   try {
-    const doctors = await filterDoctors(name, time, specialty);
+    const result = await filterDoctors(name, time, specialty);
+    const doctors = result.doctors;
     const contentDiv = document.getElementById('doctorContent');
     contentDiv.innerHTML = '';
     if (doctors.length > 0) {
