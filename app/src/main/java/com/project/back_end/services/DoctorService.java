@@ -3,6 +3,7 @@ package com.project.back_end.services;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
@@ -215,7 +216,7 @@ public class DoctorService {
         return filteredDoctors.stream().collect(Collectors.toMap(Doctor::getName, doctor -> doctor));
     }
 
-    @Transactional (readOnly = true)
+    
     @Transactional(readOnly = true)
     public Map<String, Object> filterDoctorByNameAndTime(String name, String amOrPm) {
         List<Doctor> doctors = doctorRepository.findByNameLike("%" + name + "%");
