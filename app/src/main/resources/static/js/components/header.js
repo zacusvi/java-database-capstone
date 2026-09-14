@@ -179,6 +179,7 @@ function renderHeader() {
 function attachHeaderButtonListeners() {
   const patientLoginBtn = document.getElementById("patientLogin");
   const patientSignupBtn = document.getElementById("patientSignup");
+  const addDocBtn = document.getElementById("addDocBtn");
 
   if (patientLoginBtn) {
     patientLoginBtn.addEventListener("click", () => openModal("patientLogin"));
@@ -187,6 +188,11 @@ function attachHeaderButtonListeners() {
   if (patientSignupBtn) {
     patientSignupBtn.addEventListener("click", () => openModal("patientSignup"));
   }
+
+  if (addDocBtn) {
+    addDocBtn.addEventListener("click", () => openModal("addDoctor"));
+  }
+
 }
 
 
@@ -215,4 +221,6 @@ function renderHeader() {
       </header>`;
     return;
   }
+
+  renderHeader();
 }
