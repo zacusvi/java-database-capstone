@@ -199,7 +199,11 @@ public class DoctorService {
 
     @Transactional (readOnly = true)
     public Map<String, Object> filterDoctorsByNameSpecilityandTime(String name, String time, String specialty) {
-        List<Doctor> filteredDoctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty).stream()
+        List<Doctor> matchedDoctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty);
+        if (matchedDoctors.isEmpty()) {
+            matchedDoctors = doctorRepository.findAll();
+        }
+        List<Doctor> filteredDoctors = matchedDoctors.stream()
                 .filter(doctor -> doctor.getAvailableTimes().contains(time))
                 .toList();
         return filteredDoctors.stream().collect(Collectors.toMap(Doctor::getName, doctor -> doctor));
@@ -215,7 +219,11 @@ public class DoctorService {
 
     @Transactional (readOnly = true)
     public Map<String, Object> filterDoctorByNameAndTime(String name, String specialty, String time) {
-        List<Doctor> filteredDoctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty).stream()
+        List<Doctor> matchedDoctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty);
+        if (matchedDoctors.isEmpty()) {
+            matchedDoctors = doctorRepository.findAll();
+        }
+        List<Doctor> filteredDoctors = matchedDoctors.stream()
                 .filter(doctor -> doctor.getAvailableTimes().contains(time))
                 .toList();
         return filteredDoctors.stream().collect(Collectors.toMap(Doctor::getName, doctor -> doctor));
@@ -224,8 +232,10 @@ public class DoctorService {
 
     @Transactional (readOnly = true)
     public Map<String, Object> filterDoctorByNameAndSpecility(String name, String specialty) {
-        List<Doctor> filteredDoctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty).stream()
-                .toList();
+        List<Doctor> filteredDoctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty);
+        if (filteredDoctors.isEmpty()) {
+            filteredDoctors = doctorRepository.findAll();
+        }
         return filteredDoctors.stream().collect(Collectors.toMap(Doctor::getName, doctor -> doctor));
     }
 
