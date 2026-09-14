@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Size;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 
 import java.util.List;
 
@@ -113,7 +114,7 @@ public class Doctor {
     @Column(name = "phone", nullable = false)
     private String phone;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "doctor_available_times", joinColumns = @JoinColumn(name = "doctor_id"))
     @Column(name = "available_times")
     private List<String> availableTimes;
