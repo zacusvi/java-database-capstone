@@ -203,11 +203,8 @@ private final DoctorService doctorService;
             @PathVariable String time,
             @PathVariable String speciality) {
 
-        List<Doctor> doctors = doctorService.filterDoctorsByNameSpecilityandTime(name, time, speciality);
-        Map<String, Object> response = new HashMap<>();
-        response.put("doctors", doctors);
-        response.put("count", doctors.size());
-
-        return ResponseEntity.ok(response);
+        Map<String, Object> doctors = doctorService.filterDoctorsByNameSpecilityandTime(name, time, speciality);
+        
+        return ResponseEntity.ok(doctors);
     }
 }
