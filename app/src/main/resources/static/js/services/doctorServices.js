@@ -56,7 +56,7 @@ import { API_BASE_URL } from '../config/config.js';
 
 const DOCTOR_API = API_BASE_URL + '/doctor';
 
-function getDoctors() {
+export function getDoctors() {
   return fetch(DOCTOR_API)
     .then(response => response.json())
     .then(data => data.doctors)
@@ -67,7 +67,7 @@ function getDoctors() {
 }
 
 
-async function deleteDoctor(doctorId, token) {
+export async function deleteDoctor(doctorId, token) {
   try {
     const response = await fetch(`${DOCTOR_API}/${doctorId}/${token}`, {
       method: 'DELETE'
@@ -83,7 +83,7 @@ async function deleteDoctor(doctorId, token) {
   }
 }
 
-async function saveDoctor(doctor, token) {
+export async function saveDoctor(doctor, token) {
   try {
     const response = await fetch(`${DOCTOR_API}/${token}`, {
       method: 'POST',
@@ -101,7 +101,7 @@ async function saveDoctor(doctor, token) {
   }
 }
 
-async function filterDoctors(name, time, specialty) {
+export async function filterDoctors(name, time, specialty) {
   try {
     const response = await fetch(`${DOCTOR_API}/filter/${name}/${time}/${specialty}`);
     if (response.ok) {
