@@ -203,7 +203,7 @@ private final DoctorService doctorService;
             @PathVariable String time,
             @PathVariable String speciality) {
 
-        Map<String, Object> doctors = doctorService.filterDoctorsByNameSpecilityandTime(name, time, speciality);
+        Map<String, Object> doctors = doctorService.filterDoctorsByNameSpecilityandTime(name, speciality, time);
         
         return ResponseEntity.ok(doctors);
     }

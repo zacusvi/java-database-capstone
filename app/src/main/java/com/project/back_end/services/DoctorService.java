@@ -198,15 +198,13 @@ public class DoctorService {
     }
 
     @Transactional (readOnly = true)
-    public Map<String, Object> filterDoctorsByNameSpecilityandTime(String name, String time, String specialty) {
-        List<Doctor> matchedDoctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty);
-        if (matchedDoctors.isEmpty()) {
-            matchedDoctors = doctorRepository.findAll();
-        }
-        List<Doctor> filteredDoctors = matchedDoctors.stream()
-                .filter(doctor -> doctor.getAvailableTimes().contains(time))
-                .toList();
-        return filteredDoctors.stream().collect(Collectors.toMap(Doctor::getName, doctor -> doctor));
+    public Map<String, Object> filterDoctorsByNameSpecilityandTime(String name, String specialty, String amOrPm) {
+        List<Doctor> doctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty);
+        List<Doctor> filtered = filterDoctorByTime(doctors, amOrPm);
+        Map<String, Object> result = new HashMap<>();
+        result.put("doctors", filtered);
+        result.put("count", filtered.size());
+        return result;
     }
 
     @Transactional (readOnly = true)
@@ -218,15 +216,14 @@ public class DoctorService {
     }
 
     @Transactional (readOnly = true)
-    public Map<String, Object> filterDoctorByNameAndTime(String name, String specialty, String time) {
-        List<Doctor> matchedDoctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty);
-        if (matchedDoctors.isEmpty()) {
-            matchedDoctors = doctorRepository.findAll();
-        }
-        List<Doctor> filteredDoctors = matchedDoctors.stream()
-                .filter(doctor -> doctor.getAvailableTimes().contains(time))
-                .toList();
-        return filteredDoctors.stream().collect(Collectors.toMap(Doctor::getName, doctor -> doctor));
+    @Transactional(readOnly = true)
+    public Map<String, Object> filterDoctorByNameAndTime(String name, String amOrPm) {
+        List<Doctor> doctors = doctorRepository.findByNameLike("%" + name + "%");
+        List<Doctor> filtered = filterDoctorByTime(doctors, amOrPm);
+        Map<String, Object> result = new HashMap<>();
+        result.put("doctors", filtered);
+        result.put("count", filtered.size());
+        return result;
     }
 
 
