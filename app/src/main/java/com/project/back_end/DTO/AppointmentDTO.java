@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import com.project.back_end.models.Appointment;
+
 public class AppointmentDTO {
 // 1. 'id' field:
 //    - Type: private Long
@@ -91,19 +93,19 @@ public class AppointmentDTO {
 //    - Standard getter methods are provided for all fields: id, doctorId, doctorName, patientId, patientName, patientEmail, patientPhone, patientAddress, appointmentTime, status, appointmentDate, appointmentTimeOnly, and endTime.
 //    - These methods allow access to the values of the fields in the AppointmentDTO object.
 
-    Long id;
-    Long doctorId;
-    String doctorName;
-    Long patientId;
-    String patientName;
-    String patientEmail;
-    String patientPhone;
-    String patientAddress;
-    LocalDateTime appointmentTime;
-    int status;
-    LocalDate appointmentDate;
-    LocalTime appointmentTimeOnly;
-    LocalDateTime endTime;
+    private Long id;
+    private Long doctorId;
+    private String doctorName;
+    private Long patientId;
+    private String patientName;
+    private String patientEmail;
+    private String patientPhone;
+    private String patientAddress;
+    private LocalDateTime appointmentTime;
+    private int status;
+    private LocalDate appointmentDate;
+    private LocalTime appointmentTimeOnly;
+    private LocalDateTime endTime;
     
     public AppointmentDTO(Long id, Long doctorId, String doctorName, Long patientId, String patientName,
             String patientEmail, String patientPhone, String patientAddress, LocalDateTime appointmentTime,
@@ -124,6 +126,26 @@ public class AppointmentDTO {
             this.appointmentTimeOnly = appointmentTime.toLocalTime();
             this.endTime = appointmentTime.plusHours(1);
         }
+    }
+    public AppointmentDTO(Appointment appointment) {
+        this.id = appointment.getId();
+    
+        this.doctorId = appointment.getDoctor().getId();
+        this.doctorName = appointment.getDoctor().getName();
+    
+        this.patientId = appointment.getPatient().getId();
+        this.patientName = appointment.getPatient().getName();
+        this.patientEmail = appointment.getPatient().getEmail();
+        this.patientPhone = appointment.getPatient().getPhone();
+        this.patientAddress = appointment.getPatient().getAddress();
+    
+        this.appointmentTime = appointment.getAppointmentTime();
+        this.status = appointment.getStatus();
+    
+        // Derived fields
+        this.appointmentDate = appointmentTime.toLocalDate();
+        this.appointmentTimeOnly = appointmentTime.toLocalTime();
+        this.endTime = appointmentTime.plusHours(1);
     }
     
     

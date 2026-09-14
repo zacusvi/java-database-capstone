@@ -1,6 +1,12 @@
 package com.project.back_end.repo;
 
-public interface PatientRepository {
+import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import com.project.back_end.models.Patient;
+
+@Repository 
+public interface PatientRepository extends JpaRepository<Patient, Long> {
     // 1. Extend JpaRepository:
 //    - The repository extends JpaRepository<Patient, Long>, which provides basic CRUD functionality.
 //    - This allows the repository to perform operations like save, delete, update, and find without needing to implement these methods manually.
@@ -24,6 +30,11 @@ public interface PatientRepository {
 //    - The @Repository annotation marks this interface as a Spring Data JPA repository.
 //    - Spring Data JPA automatically implements this repository, providing the necessary CRUD functionality and custom queries defined in the interface.
 
+    @Query("SELECT p FROM Patient p WHERE p.email = :email")
+    Patient findByEmail(String email);
+
+    @Query("SELECT p FROM Patient p WHERE p.email = :email OR p.phone = :phone")
+    Patient findByEmailOrPhone(String email, String phone);
 
 }
 

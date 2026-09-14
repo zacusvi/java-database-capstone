@@ -28,6 +28,7 @@ public class Login {
 
     private String email;
     private String password;
+    private String identifier;
 
     public Login() {
     }
@@ -46,6 +47,14 @@ public class Login {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
 }

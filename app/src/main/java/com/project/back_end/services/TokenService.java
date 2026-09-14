@@ -1,5 +1,21 @@
 package com.project.back_end.services;
 
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+import java.util.Date;
+
+import javax.crypto.SecretKey;
+
+import com.project.back_end.repo.AdminRepository;
+import com.project.back_end.repo.DoctorRepository;
+import com.project.back_end.repo.PatientRepository;
+
+
+@Component 
 public class TokenService {
 // 1. **@Component Annotation**
 // The @Component annotation marks this class as a Spring component, meaning Spring will manage it as a bean within its application context.
@@ -38,6 +54,87 @@ public class TokenService {
 // - If the role or user does not exist, it returns false, indicating the token is invalid.
 // - The method gracefully handles any errors by returning false if the token is invalid or an exception occurs.
 // This ensures secure access control based on the user's role and their existence in the system.
+
+        private final AdminRepository adminRepository;
+private final DoctorRepository doctorRepository;
+private final PatientRepository patientRepository;
+
+    public TokenService(AdminRepository adminRepository, DoctorRepository doctorRepository, PatientRepository patientRepository) {
+        this.adminRepository = adminRepository;
+        this.doctorRepository = doctorRepository;
+        this.patientRepository = patientRepository;
+    }
+
+    private SecretKey getSigningKey() {
+        String secret = "$!@#$^%$$$%####$DDCPN0234FCFDPD8670M";
+        return io.jsonwebtoken.security.Keys.hmacShaKeyFor(secret.getBytes());
+    }
+
+     public String extractIdentifier(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject();
+    }
+
+    public String extractEmail(String token) {
+        return Jwts.parser()
+            .verifyWith(getSigningKey())
+            .build()
+            .parseSignedClaims(token)
+            .getPayload()
+            .getSubject(); 
+    }
+    public String generateToken(String identifier) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+        return Jwts.builder()
+                .setSubject(identifier)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+
+    /* Past trying to generate token with username and email, but now using identifier (email) only for simplicity.
+    public String generateToken(String username ,String email) {
+        String secretKey = Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 604800000)) // 7 days
+                .signWith(getSigningKey())
+                .compact();
+        return secretKey;
+        
+    }
+    
+    */
+
+
+    public boolean validateToken(String token, String role) {
+        try {
+            String email = extractEmail(token);
+            if ("admin".equalsIgnoreCase(role)) {
+                return adminRepository.findByUsername(email) != null;
+            } else if ("doctor".equalsIgnoreCase(role)) {
+                return doctorRepository.findByEmail(email) != null;
+            } else if ("patient".equalsIgnoreCase(role)) {
+                return patientRepository.findByEmail(email) != null;
+            } else {
+                return false; 
+            }
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+
+    
 
 
 }

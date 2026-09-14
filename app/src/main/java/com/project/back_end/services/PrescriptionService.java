@@ -1,5 +1,16 @@
 package com.project.back_end.services;
 
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.project.back_end.models.Prescription;
+import com.project.back_end.repo.PrescriptionRepository;
+
+import org.springframework.transaction.annotation.Transactional;
+
+@Service 
 public class PrescriptionService {
     
  // 1. **Add @Service Annotation**:
@@ -29,6 +40,44 @@ public class PrescriptionService {
 //    - Both methods (`savePrescription` and `getPrescription`) contain try-catch blocks to handle exceptions that may occur during database interaction.
 //    - If an error occurs, the method logs the error and returns an HTTP `500 Internal Server Error` response with a corresponding error message.
 //    - Instruction: Ensure that all potential exceptions are handled properly, and meaningful responses are returned to the client.
+
+
+    private final PrescriptionRepository prescriptionRepository;
+    public PrescriptionService(PrescriptionRepository prescriptionRepository) {
+        this.prescriptionRepository = prescriptionRepository;
+    }
+
+    @Transactional 
+    public ResponseEntity<Map<String, String>> savePrescription(Prescription prescription) {
+        try {
+            Long appointmentId = prescription.getAppointmentId();
+            if (prescriptionRepository.findByAppointmentId(appointmentId).isEmpty()) {
+                prescriptionRepository.save(prescription);
+                return ResponseEntity.status(201).body(Map.of("message", "Prescription saved successfully"));
+            } else {
+                return ResponseEntity.status(400).body(Map.of("message", "Prescription already exists for this appointment"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("message", "Error saving prescription"));
+        }
+    }
+
+    @Transactional( readOnly = true) 
+    public ResponseEntity<Map<String, Object>> getPrescription(Long appointmentId) {
+        try {
+            Prescription prescription = prescriptionRepository.findByAppointmentId(appointmentId).stream().findFirst().orElse(null);
+            if (prescription != null) {
+                return ResponseEntity.ok(Map.of("prescription", prescription));
+            } else {
+                return ResponseEntity.status(404).body(Map.of("message", "No prescription found for this appointment"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("message", "Error fetching prescription"));
+        }
+    }
+
 
 
 }

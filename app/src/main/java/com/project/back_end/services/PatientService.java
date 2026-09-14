@@ -1,5 +1,24 @@
 package com.project.back_end.services;
 
+import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.project.back_end.DTO.AppointmentDTO;
+import com.project.back_end.models.Appointment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.project.back_end.models.Patient;
+import com.project.back_end.repo.AppointmentRepository;
+import com.project.back_end.repo.PatientRepository;
+
+import org.springframework.transaction.annotation.Transactional;
+
+@Service 
 public class PatientService {
 // 1. **Add @Service Annotation**:
 //    - The `@Service` annotation is used to mark this class as a Spring service component. 
@@ -52,6 +71,133 @@ public class PatientService {
 // 10. **Use of DTOs (Data Transfer Objects)**:
 //    - The service uses `AppointmentDTO` to transfer appointment-related data between layers. This ensures that sensitive or unnecessary data (e.g., password or private patient information) is not exposed in the response.
 //    - Instruction: Ensure that DTOs are used appropriately to limit the exposure of internal data and only send the relevant fields to the client.
+
+
+
+    private final PatientRepository patientRepository;
+    private final AppointmentRepository appointmentRepository;
+    private final TokenService tokenService;
+    public PatientService(PatientRepository patientRepository, AppointmentRepository appointmentRepository, TokenService tokenService) {
+        this.patientRepository = patientRepository;
+        this.appointmentRepository = appointmentRepository;
+        this.tokenService = tokenService;
+    }
+
+    @Transactional 
+    public int createPatient(Patient patient) {
+        try {
+            patientRepository.save(patient);
+            return 1;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    @Transactional (readOnly = true)
+    public ResponseEntity<Map<String, Object>> getPatientAppointment(Long patientId, String token) {
+        try {
+            List<Appointment> appointments = appointmentRepository.findByPatientId(patientId);
+            if(token == null || token.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }else if(!tokenService.validateToken(token, "patient")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            List<AppointmentDTO> appointmentDTOs = appointments.stream()
+                .map(AppointmentDTO::new)
+                .collect(Collectors.toList());
+            return ResponseEntity.ok(Collections.singletonMap("appointments", appointmentDTOs));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+    @Transactional (readOnly = true)
+    public ResponseEntity<Map<String, Object>> filterByCondition(String condition, Long patientId) {
+        try {
+            int status;
+            if ("past".equalsIgnoreCase(condition)) {
+                status = 1; 
+            } else if ("future".equalsIgnoreCase(condition)) {
+                status = 0; 
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+
+            List<Appointment> appointments = appointmentRepository.findByPatient_IdAndStatusOrderByAppointmentTimeAsc(patientId, status);
+            List<AppointmentDTO> appointmentDTOs = appointments.stream()
+                    .map(AppointmentDTO::new)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(Collections.singletonMap("appointments", appointmentDTOs));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+    @Transactional (readOnly = true)
+    public ResponseEntity<Map<String, Object>> filterByDoctor(String doctorName, Long patientId) {
+        try {
+            List<Appointment> appointments = appointmentRepository.filterByDoctorNameAndPatientId(doctorName, patientId);
+            List<AppointmentDTO> appointmentDTOs = appointments.stream()
+                    .map(AppointmentDTO::new)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(Collections.singletonMap("appointments", appointmentDTOs));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<Map<String, Object>> filterByDoctorAndCondition(String condition, String name, Long patientId) {
+        try {
+            int status;
+            if ("past".equalsIgnoreCase(condition)) {
+                status = 1; 
+            } else if ("future".equalsIgnoreCase(condition)) {
+                status = 0; 
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+
+            List<Appointment> appointments = appointmentRepository.filterByDoctorNameAndPatientIdAndStatus(name, patientId, status);
+            List<AppointmentDTO> appointmentDTOs = appointments.stream()
+                    .map(AppointmentDTO::new)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(Collections.singletonMap("appointments", appointmentDTOs));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+    @Transactional (readOnly = true)
+    public ResponseEntity<Map<String, Object>> getPatientDetails(String token) {
+        try {
+            if(token == null || token.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }else if(!tokenService.validateToken(token, "patient")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            String email = tokenService.extractEmail(token);
+            Patient patient = patientRepository.findByEmail(email);
+            if (patient == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(Collections.singletonMap("patient", patient));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+
+
+
+
+
 
 
 
