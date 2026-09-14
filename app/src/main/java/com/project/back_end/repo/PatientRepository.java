@@ -30,10 +30,10 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 //    - The @Repository annotation marks this interface as a Spring Data JPA repository.
 //    - Spring Data JPA automatically implements this repository, providing the necessary CRUD functionality and custom queries defined in the interface.
 
-    @Query("SELECT p FROM Patient p WHERE p.email = :email")
+    
     Patient findByEmail(String email);
 
-    @Query("SELECT p FROM Patient p WHERE p.email = :email OR p.phone = :phone")
+    
     Patient findByEmailOrPhone(String email, String phone);
 
 }

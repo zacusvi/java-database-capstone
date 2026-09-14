@@ -117,7 +117,7 @@ private final PatientService patientService;
         }
     }
 
-    // 2. Validate Admin Login
+    
     public ResponseEntity<Map<String, String>> validateAdmin(Admin receivedAdmin) {
         Map<String, String> response = new HashMap<>();
         try {
@@ -139,12 +139,12 @@ private final PatientService patientService;
         }
     }
 
-    // 3. Filter Doctors
+    
     public Map<String, Object> filterDoctor(String name, String specialty, String time) {
         return doctorService.filterDoctorsByNameSpecilityandTime(name, specialty, time);
     }
 
-    // 4. Validate Appointment
+   
     public int validateAppointment(Appointment appointment) {
         try {
             Long doctorId = appointment.getDoctor().getId();
@@ -163,17 +163,17 @@ private final PatientService patientService;
         }
     }
 
-    // 5. Validate Patient existence
+    
     public boolean validatePatient(Patient patient) {
         Patient existing = patientRepository.findByEmailOrPhone(patient.getEmail(), patient.getPhone());
         return existing == null;
     }
 
-    // 6. Validate Patient Login
+   
     public ResponseEntity<Map<String, String>> validatePatientLogin(Login login) {
         Map<String, String> response = new HashMap<>();
         try {
-            Patient patient = patientRepository.findByEmail(login.getIdentifier());
+            Patient patient = patientRepository.findByEmail(login.getEmail());
             if (patient == null) {
                 response.put("message", "Patient not found");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
