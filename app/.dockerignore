@@ -1,0 +1,34 @@
+# Build output
+target/
+*.class
+
+# Maven wrapper cache / logs
+.mvn/wrapper/maven-wrapper.jar
+*.log
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+
+# Git
+.git/
+.gitignore
+.github/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docs
+*.md
+HELP.md
+
+# Docker
+Dockerfile
+DockerFile
+.dockerignore
+docker-compose*.yml
