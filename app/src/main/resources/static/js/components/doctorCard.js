@@ -58,7 +58,7 @@ export function createDoctorCard(doctor) {
   
 
   const specialization = document.createElement('p');
-  specialization.textContent = `Specialization: ${doctor.specialization}`;
+  specialization.textContent = `Specialization: ${doctor.specialty}`;
   
 
   const email = document.createElement('p');
@@ -66,7 +66,7 @@ export function createDoctorCard(doctor) {
   
 
   const availability = document.createElement('ul');
-  doctor.appointmentTimes.forEach(time => {
+  (doctor.availableTimes || []).forEach(time => {
     const li = document.createElement('li');
     li.textContent = time;
     availability.appendChild(li);
