@@ -70,49 +70,69 @@ const DOCTOR_API = API_BASE_URL + '/doctor';
           openModal('adminLogin');
         });
           }
+
+          const doctorBtn = document.getElementById('doctorLogin');
+       if (doctorBtn) {
+        doctorBtn.addEventListener('click', () => {
+          openModal('doctorLogin');
+        });
+          }
        
         }     
 
 
-async function adminLoginHandler() {
+window.adminLoginHandler = async function () {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
   const admin = { username, password };
-  const response = await fetch(ADMIN_API, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(admin)
-  });
-  if (response.ok) {
-    const data = await response.json();
-    localStorage.setItem('token', data.token);
-    selectRole('admin');
-  } else {
-    alert('Invalid admin credentials. Please try again.');
-  }
-
-        }
-
-async function doctorLoginHandler() {
-  const doctor = { email, password };
-  const response = await fetch(DOCTOR_API, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(doctor)
-  });
-  if (response.ok) {
-    const data = await response.json();
-    localStorage.setItem('token', data.token);
-    selectRole('doctor');
-  } else {
-    
-    switch (response.status) {
-      case 401:
-        alert('Invalid doctor credentials. Please try again.');
-        break;
-      case 404:
-        alert('Doctor not found. Please check your email and try again.');
-        break;
-      default:
-        alert('An error occurred during login. Please try again later.');
+  try {
+    const response = await fetch(ADMIN_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(admin)
+    });
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('token', data.token);
+      selectRole('admin');
+    } else {
+      alert('Invalid admin credentials. Please try again.');
     }
+  } catch (error) {
+    console.error('Error :: adminLoginHandler :: ', error);
+    alert('An error occurred during login. Please try again later.');
+  }
+}
+
+window.doctorLoginHandler = async function () {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const doctor = { email, password };
+  try {
+    const response = await fetch(DOCTOR_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(doctor)
+    });
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('token', data.token);
+      selectRole('doctor');
+    } else {
+
+      switch (response.status) {
+        case 401:
+          alert('Invalid doctor credentials. Please try again.');
+          break;
+        case 404:
+          alert('Doctor not found. Please check your email and try again.');
+          break;
+        default:
+          alert('An error occurred during login. Please try again later.');
+      }
+    }
+  } catch (error) {
+    console.error('Error :: doctorLoginHandler :: ', error);
+    alert('An error occurred during login. Please try again later.');
   }
 }
